@@ -1,0 +1,23 @@
+{
+  "skill_name": "convert-html-to-wechat",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我有一个HTML文件 /tmp/wechat-test/test1-article.html，这是一篇AI技术趋势的文章，需要转成微信公众号能用的格式。请帮我转换一下。",
+      "expected_output": "转换后的HTML文件，所有CSS内联化，伪元素转为真实元素，不支持的CSS属性被过滤",
+      "files": ["/tmp/wechat-test/test1-article.html"]
+    },
+    {
+      "id": 2,
+      "prompt": "帮我把这个产品介绍页面 /tmp/wechat-test/test2-product.html 转成微信公众号格式，里面有表格和按钮，我之前直接粘贴样式全丢了。",
+      "expected_output": "转换后的HTML文件，表格样式保留，按钮样式简化为微信兼容格式，flex/grid布局被处理",
+      "files": ["/tmp/wechat-test/test2-product.html"]
+    },
+    {
+      "id": 3,
+      "prompt": "/tmp/wechat-test/test3-simple.html 这个文件是邮件订阅格式的HTML，我想发到公众号上，帮我转换成微信兼容的格式。",
+      "expected_output": "转换后的HTML文件，counter伪元素被处理，quote-block样式保留，标签样式保留",
+      "files": ["/tmp/wechat-test/test3-simple.html"]
+    }
+  ]
+}
