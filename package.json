@@ -1,0 +1,9 @@
+{
+  "name": "convert-html-to-wechat",
+  "version": "1.0.0",
+  "description": "Convert HTML with <style> tags to WeChat-compatible inline styles",
+  "dependencies": {
+    "juice": "^8.0.0",
+    "cheerio": "^1.0.0"
+  }
+}

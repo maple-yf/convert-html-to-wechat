@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Read(//tmp/**)",
+      "Read(//private/tmp/**)"
+    ]
+  }
+}
