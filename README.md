@@ -33,15 +33,17 @@ node scripts/convert_html_to_wechat.js <input.html> <output.html>
 原始 HTML (<style>标签)
     ↓ CSS Inlining (Juice)
     ↓ 伪元素转换 (li::before → <span>)
+    ↓ <div> 转 <section>（保留背景样式）
     ↓ 过滤不支持的 CSS 属性
 微信公众号兼容 HTML
 ```
 
-脚本做了三件事：
+脚本做了四件事：
 
 1. **CSS Inlining** — 用 [Juice](https://github.com/Automattic/juice) 将 `<style>` 中的样式转为内联 `style` 属性
 2. **伪元素转换** — 将 `li::before` 等伪元素转为真实 `<span>` 元素
-3. **过滤不支持的属性** — 移除 `position`, `display`, `flex`, `transform` 等微信不支持的 CSS 属性
+3. **`<div>` 转 `<section>`** — 将带背景样式的 `<div>` 转为 `<section>`（微信编辑器不保留 `<div>` 的 `background`，但 `<section>` 可以）
+4. **过滤不支持的属性** — 移除 `position`, `display`, `flex`, `transform` 等微信不支持的 CSS 属性
 
 ## 微信公众号的限制
 
@@ -66,6 +68,7 @@ line-height: 1.8;
 ### 不支持的特性
 
 - `<style>` 标签和外部 CSS（会被过滤）
+- `<div>` 的 `background` 样式（脚本会自动转为 `<section>`）
 - 伪元素 `::before` / `::after`（脚本会自动转换 `li::before`）
 - 伪类 `:hover` / `:focus` / `:nth-child`
 - 布局属性: `position`, `display`, `float`, `flex`, `grid`

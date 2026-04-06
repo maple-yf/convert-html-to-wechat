@@ -103,17 +103,43 @@ try {
   });
   
   console.log(`   过滤了 ${filteredCount} 个不支持的 CSS 属性`);
-  
-  // 5. 保存结果
-  console.log('\nStep 5: 保存转换结果...');
-  const finalHtml = $.html();
-  fs.writeFileSync(outputFile, finalHtml);
+
+  // 6. 将带背景样式的 <div> 转为 <section>（微信编辑器不保留 <div> 的 background）
+  console.log('Step 6: 将带背景样式的 <div> 转为 <section>...');
+  let resultHtml = $.html();
+  let divToSectionCount = 0;
+  // 用正则在最终 HTML 字符串上替换，避免 cheerio 嵌套 DOM 操作的问题
+  const bgDivRegex = /<div([^>]*\bbackground\s*:[^>]*)>/gi;
+  resultHtml = resultHtml.replace(bgDivRegex, (match, attrs) => {
+    divToSectionCount++;
+    return `<section${attrs}>`;
+  });
+  // 替换匹配到的 <div> 对应的 </div>（从内向外，倒序处理短标签）
+  // 先收集所有匹配到的 <section...>（由 <div> 转来的）的位置，找到对应 </div> 并替换
+  // 简化方案：统计被转换的 <section> 数量，从后向前替换等量的 </div>
+  let closeDivs = [];
+  const closeDivRegex = /<\/div>/gi;
+  let m;
+  while ((m = closeDivRegex.exec(resultHtml)) !== null) {
+    closeDivs.push(m.index);
+  }
+  // 从后向前替换，避免索引偏移
+  for (let i = 0; i < divToSectionCount && closeDivs.length > 0; i++) {
+    const lastIdx = closeDivs.pop();
+    resultHtml = resultHtml.slice(0, lastIdx) + '</section>' + resultHtml.slice(lastIdx + 6);
+  }
+
+  console.log(`   转换了 ${divToSectionCount} 个带背景样式的 <div> 为 <section>`);
+
+  // 7. 保存结果
+  console.log('\nStep 7: 保存转换结果...');
+  fs.writeFileSync(outputFile, resultHtml);
   
   // 统计信息
   const stats = {
     originalSize: (html.length / 1024).toFixed(2),
-    finalSize: (finalHtml.length / 1024).toFixed(2),
-    lines: finalHtml.split('\n').length,
+    finalSize: (resultHtml.length / 1024).toFixed(2),
+    lines: resultHtml.split('\n').length,
   };
   
   console.log('\n✅ 转换完成！\n');
@@ -122,6 +148,7 @@ try {
   console.log(`   转换后大小: ${stats.finalSize} KB`);
   console.log(`   行数: ${stats.lines}`);
   console.log(`   处理的伪元素: ${processedCount}`);
+  console.log(`   <div> 转 <section>: ${divToSectionCount}`);
   console.log(`   过滤的属性: ${filteredCount}`);
   
   console.log('\n📋 下一步操作:');

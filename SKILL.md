@@ -24,11 +24,12 @@ node <skill-path>/scripts/convert_html_to_wechat.js <input.html> [output.html]
 - `<input.html>`: 带 `<style>` 标签的 HTML 文件
 - `[output.html]`: 可选，默认为 `<input>-wechat.html`
 
-脚本做了三件事：
+脚本做了四件事：
 
 1. **CSS Inlining** — 用 [Juice](https://github.com/Automattic/juice) 将 `<style>` 中的样式转为内联 `style` 属性
 2. **伪元素转换** — 将 `li::before` 等伪元素转为真实 `<span>` 元素
-3. **过滤不支持的属性** — 移除 `position`, `display`, `flex`, `transform` 等微信不支持的 CSS 属性
+3. **`<div>` 转 `<section>`** — 将带背景样式的 `<div>` 转为 `<section>`（微信编辑器不保留 `<div>` 的 `background`，但 `<section>` 可以）
+4. **过滤不支持的属性** — 移除 `position`, `display`, `flex`, `transform` 等微信不支持的 CSS 属性
 
 ### 转换后使用
 
